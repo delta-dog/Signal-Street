@@ -1,0 +1,37 @@
+# Responses recorded with `marketmon check-sources --record` on 2026-11-16 (a trading day)
+# around 12:35 IST. `--dry-run` serves these instead of the network: first regex that
+# matches the request URL wins; anything unmatched gets a 404.
+recorded_at: "2026-11-16T12:35:30+05:30"
+routes:
+  - {match: '^https://www\.nseindia\.com/$',                     file: empty.html}
+  - {match: 'nseindia\.com/api/corporate-announcements',          file: nse_announcements.json}
+  - {match: 'nsearchives\.nseindia\.com/content/RSS/Online_announcements', file: nse_rss_announcements.xml}
+  - {match: 'bseindia\.com/data/xml/announcements',               file: bse_rss_announcements.xml}
+  - {match: 'AnnSubCategoryGetData.*strCat=Result',               file: bse_result.json}
+  - {match: 'AnnSubCategoryGetData.*strCat=Board',                file: bse_board_meeting.json}
+  - {match: 'AnnSubCategoryGetData.*strCat=Company',              file: bse_company_update.json}
+  - {match: 'AnnSubCategoryGetData.*strCat=Corp',                 file: bse_corp_action.json}
+  - {match: 'rbi\.org\.in/pressreleases_rss',                     file: rbi_pressreleases.xml}
+  - {match: 'rbi\.org\.in/notifications_rss',                     file: rbi_notifications.xml}
+  - {match: 'rbi\.org\.in/speeches_rss',                          file: rbi_speeches.xml}
+  - {match: 'rbi\.org\.in/tenders_rss',                           file: rbi_tenders.xml}
+  - {match: 'rbi\.org\.in/Publication_rss',                       file: rbi_publication.xml}
+  - {match: 'sebi\.gov\.in/sebirss',                              file: sebi_rss.xml}
+  - {match: 'sebi\.gov\.in/.*sid=6&ssid=23',                      file: sebi_press_releases.html}
+  - {match: 'sebi\.gov\.in/.*sid=2&ssid=9',                       file: sebi_orders.html}
+  - {match: 'sebi\.gov\.in/.*sid=1&ssid=7',                       file: sebi_circulars.html}
+  - {match: 'pib\.gov\.in/allRel',                                file: pib_all_releases.html}
+  - {match: 'pib\.gov\.in/PressReleaseIframePage',                file: pib_release_excerpt.html}
+  - {match: 'business-standard\.com/rss/markets',                 file: bs_markets.xml}
+  - {match: 'economictimes.*1977021501',                          file: et_markets.xml}
+  - {match: 'economictimes.*2146842',                             file: et_stocks.xml}
+  - {match: 'livemint\.com/rss/markets',                          file: mint_markets.xml}
+  - {match: 'livemint\.com/rss/companies',                        file: mint_companies.xml}
+  - {match: 'thehindubusinessline\.com',                          file: hbl_markets.xml}
+  - {match: 'ndtvprofit\.com/stories\.rss',                       file: ndtv_profit.xml}
+  - {match: 'federalreserve\.gov/feeds/press_all',                file: fed_press_all.xml}
+  - {match: 'federalreserve\.gov/feeds/press_monetary',           file: fed_monetary.xml}
+  - {match: 'news\.google\.com/.*q=crude',                        file: gn_crude.xml}
+  - {match: 'news\.google\.com/.*q=US\+Treasury',                 file: gn_yields.xml}
+  - {match: 'news\.google\.com/.*q=Federal',                      file: gn_fed.xml}
+  - {match: 'news\.google\.com/.*q=FII',                          file: gn_fii.xml}

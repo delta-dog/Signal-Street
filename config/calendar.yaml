@@ -1,0 +1,35 @@
+# Trading-day gating. Holidays are the NSE capital-market (CM) trading holidays for 2026,
+# taken from NSE's holiday master on 2026-11-16. Add next year's list when NSE publishes it.
+timezone: Asia/Kolkata
+hot_window: {start: "08:45", end: "16:00"}   # hot cadence on trading days inside this window
+weekend_days: [5, 6]                          # Monday=0 ... Saturday=5, Sunday=6
+
+# What to do on weekends and holidays: "off" (no polling) or "cool" (cool cadence all day).
+non_trading_days: "off"
+
+holidays:
+  - 2026-01-15   # Municipal Corporation Election - Maharashtra
+  - 2026-01-26   # Republic Day
+  - 2026-02-15   # Mahashivratri (Sunday)
+  - 2026-03-03   # Holi
+  - 2026-03-21   # Id-Ul-Fitr (Saturday)
+  - 2026-03-26   # Shri Ram Navami
+  - 2026-03-31   # Shri Mahavir Jayanti
+  - 2026-04-03   # Good Friday
+  - 2026-04-14   # Dr. Baba Saheb Ambedkar Jayanti
+  - 2026-05-01   # Maharashtra Day
+  - 2026-05-28   # Bakri Id
+  - 2026-06-26   # Muharram
+  - 2026-08-15   # Independence Day (Saturday)
+  - 2026-09-14   # Ganesh Chaturthi
+  - 2026-10-02   # Mahatma Gandhi Jayanti
+  - 2026-10-20   # Dussehra
+  - 2026-11-08   # Diwali Laxmi Pujan (Sunday; Muhurat trading, see below)
+  - 2026-11-10   # Diwali-Balipratipada
+  - 2026-11-24   # Prakash Gurpurb Sri Guru Nanak Dev
+  - 2026-12-25   # Christmas
+
+# Special sessions override the calendar: hot cadence inside the window even on a holiday.
+# Muhurat trading timings come in an NSE circular a few weeks before Diwali; fill them in.
+special_sessions:
+  # - {date: 2026-11-08, start: "17:30", end: "19:30", name: "Muhurat trading"}

@@ -1,0 +1,272 @@
+# Index allowlist: Nifty 50 constituents. YOU maintain this file.
+# Seeded 2026-11-16 from nsearchives.nseindia.com/content/indices/ind_nifty50list.csv;
+# bse_code mapped by ISIN from BSE's scrip list. heavyweight: true marks the top ~14 by
+# index weight from memory, NOT from an official weight file: check against the latest
+# NSE index factsheet. Sensex 30 members are (as of the last review) all Nifty 50 members;
+# add any Sensex-only name here with sensex: true.
+# aliases: names to look for in regulator/media headlines (short ALL-CAPS ones match case-sensitively).
+constituents:
+  - symbol: "ADANIENT"
+    name: "Adani Enterprises Ltd."
+    isin: INE423A01024
+    bse_code: 512599
+    aliases: ["Adani Enterprises"]
+  - symbol: "ADANIPORTS"
+    name: "Adani Ports and Special Economic Zone Ltd."
+    isin: INE742F01042
+    bse_code: 532921
+    aliases: ["Adani Ports and Special Economic Zone", "Adani Ports"]
+  - symbol: "APOLLOHOSP"
+    name: "Apollo Hospitals Enterprise Ltd."
+    isin: INE437A01024
+    bse_code: 508869
+    aliases: ["Apollo Hospitals Enterprise"]
+  - symbol: "ASIANPAINT"
+    name: "Asian Paints Ltd."
+    isin: INE021A01026
+    bse_code: 500820
+    aliases: ["Asian Paints"]
+  - symbol: "AXISBANK"
+    name: "Axis Bank Ltd."
+    isin: INE238A01034
+    bse_code: 532215
+    heavyweight: true
+    aliases: ["Axis Bank"]
+  - symbol: "BSE"
+    name: "BSE Ltd."
+    isin: INE118H01025
+    bse_code: null
+    aliases: ["BSE"]
+  - symbol: "BAJAJ-AUTO"
+    name: "Bajaj Auto Ltd."
+    isin: INE917I01010
+    bse_code: 532977
+    aliases: ["Bajaj Auto"]
+  - symbol: "BAJFINANCE"
+    name: "Bajaj Finance Ltd."
+    isin: INE296A01032
+    bse_code: 500034
+    heavyweight: true
+    aliases: ["Bajaj Finance"]
+  - symbol: "BAJAJFINSV"
+    name: "Bajaj Finserv Ltd."
+    isin: INE918I01026
+    bse_code: 532978
+    aliases: ["Bajaj Finserv"]
+  - symbol: "BEL"
+    name: "Bharat Electronics Ltd."
+    isin: INE263A01024
+    bse_code: 500049
+    aliases: ["Bharat Electronics", "BEL"]
+  - symbol: "BHARTIARTL"
+    name: "Bharti Airtel Ltd."
+    isin: INE397D01024
+    bse_code: 532454
+    heavyweight: true
+    aliases: ["Bharti Airtel", "Airtel"]
+  - symbol: "CIPLA"
+    name: "Cipla Ltd."
+    isin: INE059A01026
+    bse_code: 500087
+    aliases: ["Cipla"]
+  - symbol: "COALINDIA"
+    name: "Coal India Ltd."
+    isin: INE522F01014
+    bse_code: 533278
+    aliases: ["Coal India"]
+  - symbol: "DRREDDY"
+    name: "Dr. Reddy's Laboratories Ltd."
+    isin: INE089A01031
+    bse_code: 500124
+    aliases: ["Dr. Reddy's Laboratories", "Dr Reddy's", "Dr. Reddy's"]
+  - symbol: "EICHERMOT"
+    name: "Eicher Motors Ltd."
+    isin: INE066A01021
+    bse_code: 505200
+    aliases: ["Eicher Motors"]
+  - symbol: "ETERNAL"
+    name: "Eternal Ltd."
+    isin: INE758T01015
+    bse_code: 543320
+    aliases: ["Eternal", "Zomato"]
+  - symbol: "GRASIM"
+    name: "Grasim Industries Ltd."
+    isin: INE047A01021
+    bse_code: 500300
+    aliases: ["Grasim Industries"]
+  - symbol: "HCLTECH"
+    name: "HCL Technologies Ltd."
+    isin: INE860A01027
+    bse_code: 532281
+    aliases: ["HCL Technologies", "HCLTech", "HCL Tech"]
+  - symbol: "HDFCBANK"
+    name: "HDFC Bank Ltd."
+    isin: INE040A01034
+    bse_code: 500180
+    heavyweight: true
+    aliases: ["HDFC Bank"]
+  - symbol: "HDFCLIFE"
+    name: "HDFC Life Insurance Company Ltd."
+    isin: INE795G01014
+    bse_code: 540777
+    aliases: ["HDFC Life Insurance Company", "HDFC Life"]
+  - symbol: "HINDALCO"
+    name: "Hindalco Industries Ltd."
+    isin: INE038A01020
+    bse_code: 500440
+    aliases: ["Hindalco Industries"]
+  - symbol: "HINDUNILVR"
+    name: "Hindustan Unilever Ltd."
+    isin: INE030A01027
+    bse_code: 500696
+    heavyweight: true
+    aliases: ["Hindustan Unilever", "HUL"]
+  - symbol: "ICICIBANK"
+    name: "ICICI Bank Ltd."
+    isin: INE090A01021
+    bse_code: 532174
+    heavyweight: true
+    aliases: ["ICICI Bank"]
+  - symbol: "ITC"
+    name: "ITC Ltd."
+    isin: INE154A01025
+    bse_code: 500875
+    heavyweight: true
+    aliases: ["ITC"]
+  - symbol: "INFY"
+    name: "Infosys Ltd."
+    isin: INE009A01021
+    bse_code: 500209
+    heavyweight: true
+    aliases: ["Infosys"]
+  - symbol: "INDIGO"
+    name: "InterGlobe Aviation Ltd."
+    isin: INE646L01027
+    bse_code: 539448
+    aliases: ["InterGlobe Aviation"]
+  - symbol: "JSWSTEEL"
+    name: "JSW Steel Ltd."
+    isin: INE019A01038
+    bse_code: 500228
+    aliases: ["JSW Steel"]
+  - symbol: "JIOFIN"
+    name: "Jio Financial Services Ltd."
+    isin: INE758E01017
+    bse_code: 543940
+    aliases: ["Jio Financial Services"]
+  - symbol: "KOTAKBANK"
+    name: "Kotak Mahindra Bank Ltd."
+    isin: INE237A01036
+    bse_code: 500247
+    heavyweight: true
+    aliases: ["Kotak Mahindra Bank", "Kotak Bank", "Kotak Mahindra"]
+  - symbol: "LT"
+    name: "Larsen & Toubro Ltd."
+    isin: INE018A01030
+    bse_code: 500510
+    heavyweight: true
+    aliases: ["Larsen & Toubro", "L&T", "Larsen"]
+  - symbol: "M&M"
+    name: "Mahindra & Mahindra Ltd."
+    isin: INE101A01026
+    bse_code: 500520
+    heavyweight: true
+    aliases: ["Mahindra & Mahindra", "M&M"]
+  - symbol: "MARUTI"
+    name: "Maruti Suzuki India Ltd."
+    isin: INE585B01010
+    bse_code: 532500
+    aliases: ["Maruti Suzuki India", "Maruti"]
+  - symbol: "MAXHEALTH"
+    name: "Max Healthcare Institute Ltd."
+    isin: INE027H01010
+    bse_code: 543220
+    aliases: ["Max Healthcare Institute"]
+  - symbol: "NTPC"
+    name: "NTPC Ltd."
+    isin: INE733E01010
+    bse_code: 532555
+    aliases: ["NTPC"]
+  - symbol: "NESTLEIND"
+    name: "Nestle India Ltd."
+    isin: INE239A01024
+    bse_code: 500790
+    aliases: ["Nestle India"]
+  - symbol: "ONGC"
+    name: "Oil & Natural Gas Corporation Ltd."
+    isin: INE213A01029
+    bse_code: 500312
+    aliases: ["Oil & Natural Gas Corporation", "ONGC"]
+  - symbol: "POWERGRID"
+    name: "Power Grid Corporation of India Ltd."
+    isin: INE752E01010
+    bse_code: 532898
+    aliases: ["Power Grid Corporation of India", "Power Grid"]
+  - symbol: "RELIANCE"
+    name: "Reliance Industries Ltd."
+    isin: INE002A01018
+    bse_code: 500325
+    heavyweight: true
+    aliases: ["Reliance Industries", "RIL"]
+  - symbol: "SBILIFE"
+    name: "SBI Life Insurance Company Ltd."
+    isin: INE123W01016
+    bse_code: 540719
+    aliases: ["SBI Life Insurance Company", "SBI Life"]
+  - symbol: "SHRIRAMFIN"
+    name: "Shriram Finance Ltd."
+    isin: INE721A01047
+    bse_code: 511218
+    aliases: ["Shriram Finance"]
+  - symbol: "SBIN"
+    name: "State Bank of India"
+    isin: INE062A01020
+    bse_code: 500112
+    heavyweight: true
+    aliases: ["State Bank of India", "SBI"]
+  - symbol: "SUNPHARMA"
+    name: "Sun Pharmaceutical Industries Ltd."
+    isin: INE044A01036
+    bse_code: 524715
+    aliases: ["Sun Pharmaceutical Industries", "Sun Pharma"]
+  - symbol: "TCS"
+    name: "Tata Consultancy Services Ltd."
+    isin: INE467B01029
+    bse_code: 532540
+    heavyweight: true
+    aliases: ["Tata Consultancy Services", "TCS"]
+  - symbol: "TATACONSUM"
+    name: "Tata Consumer Products Ltd."
+    isin: INE192A01025
+    bse_code: 500800
+    aliases: ["Tata Consumer Products"]
+  - symbol: "TMPV"
+    name: "Tata Motors Passenger Vehicles Ltd."
+    isin: INE155A01022
+    bse_code: 500570
+    aliases: ["Tata Motors Passenger Vehicles", "Tata Motors"]
+  - symbol: "TATASTEEL"
+    name: "Tata Steel Ltd."
+    isin: INE081A01020
+    bse_code: 500470
+    aliases: ["Tata Steel"]
+  - symbol: "TECHM"
+    name: "Tech Mahindra Ltd."
+    isin: INE669C01036
+    bse_code: 532755
+    aliases: ["Tech Mahindra"]
+  - symbol: "TITAN"
+    name: "Titan Company Ltd."
+    isin: INE280A01028
+    bse_code: 500114
+    aliases: ["Titan Company", "Titan"]
+  - symbol: "TRENT"
+    name: "Trent Ltd."
+    isin: INE849A01020
+    bse_code: 500251
+    aliases: ["Trent"]
+  - symbol: "ULTRACEMCO"
+    name: "UltraTech Cement Ltd."
+    isin: INE481G01011
+    bse_code: 532538
+    aliases: ["UltraTech Cement", "UltraTech"]

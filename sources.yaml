@@ -1,0 +1,229 @@
+# Source configuration. Each top-level entry under `sources` gets its own async worker.
+# cadence: seconds between polls. hot = 08:45-16:00 IST on trading days, cool = otherwise,
+# burst = optional fast mode you switch on by hand (e.g. RBI on MPC decision days).
+# Disable any source with `enabled: false`, or at runtime with MARKETMON_DISABLE=nse,bse.
+
+# Descriptive UA sent to RSS/media hosts. Exchange and regulator sites that reject
+# non-browser clients use browser-like headers instead (browser_headers: true).
+user_agent: "SignalStreet/0.1 (personal Indian market-news monitor; polite low-rate polling)"
+
+db: marketmon.db
+files:
+  index: config/index.yaml        # Nifty 50 / Sensex allowlist (you maintain it)
+  rules: config/rules.yaml        # drop / keep patterns and priority rules
+  calendar: config/calendar.yaml  # NSE holidays, hot window, Muhurat override
+
+alerts:
+  digest_minutes: 5               # P1 digest interval; P0 is pushed immediately
+  fresh_minutes: 10               # on (re)start, only alert on items published this recently
+  # Sinks are enabled when listed here AND their env vars are set:
+  #   telegram: TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+  #   email:    SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, ALERT_EMAIL_FROM, ALERT_EMAIL_TO
+  sinks: [console, telegram, email]
+
+markets:
+  # Live prices for the dashboard (personal use only; exchange data may not be redistributed).
+  enabled: true
+  indices: ["NIFTY 50", "NIFTY BANK", "NIFTY IT", "NIFTY FINANCIAL SERVICES", "NIFTY MIDCAP 100", "INDIA VIX"]
+  fx: [USD, EUR, GBP, JPY, AED, SGD]          # shown as INR per unit (JPY per 100)
+  cadence:
+    indices: {hot: 15, cool: 300}             # NSE allIndices + marketStatus
+    stocks:  {hot: 30, cool: 600}             # BSE group-A movers (all Nifty 50 names)
+    fx:      {hot: 60, cool: 300}             # Coinbase rates; daily reference hourly
+
+dedupe:
+  window_hours: 6
+  max_hamming: 3                  # simhash bits (of 64) for "same headline"
+  min_jaccard: 0.6                # second pass: token overlap
+  cross_exchange_minutes: 30      # NSE + BSE copies of one filing
+
+# Minimum seconds between two requests to the same host, across all sources.
+host_min_interval:
+  default: 1.0
+  www.nseindia.com: 0.34     # hard cap: 3 req/s
+  api.bseindia.com: 0.34
+  news.google.com: 2.0
+
+sources:
+  # ---------------------------------------------------------------- exchanges
+  nse:
+    # robots.txt disallows /api/. Disable here if you do not have permission to use it.
+    type: nse
+    tier: exchange
+    enabled: true
+    cadence: {hot: 7, cool: 300}
+
+  bse:
+    type: bse
+    tier: exchange
+    enabled: true
+    cadence: {hot: 7, cool: 300}
+    timeout: 30          # api.bseindia.com sometimes takes 10+ s to answer
+    # One request for page 1 (50 newest) across all categories; the noise filter does the rest.
+    # Measured 2026-11-16 (12-min race): p50 lag 33 s, fastest 5 s, and it beat BSE's own XML feed
+    # on 10 of 13 filings. The old per-category requests (Result / Board Meeting / Company Update /
+    # Corp. Action) took 4 round trips and often timed out.
+    categories: ["-1"]
+
+  nse_rss:
+    # NSE's official RSS of all announcements, on the archive host (not the /api/ path robots.txt
+    # disallows). Measured: ~2.5 min behind the JSON API (p50 192 s vs 46 s); it's a cached file.
+    # Enable it if you turn `nse` off. Supports conditional GET, so polling is cheap.
+    type: nse_rss
+    tier: exchange
+    enabled: false
+    cadence: {hot: 20, cool: 300}
+    urls: ["https://nsearchives.nseindia.com/content/RSS/Online_announcements.xml"]
+
+  # Not used: https://www.bseindia.com/data/xml/announcements.xml. It works, but it is ~36 s behind
+  # the BSE API and is a 2.5 MB file with no ETag/Last-Modified, so every poll downloads it all.
+
+  # --------------------------------------------------------------- regulators
+  rbi:
+    type: rss
+    tier: regulator
+    cadence: {hot: 45, cool: 300, burst: 3}
+    burst_urls:   # only these are polled in burst mode (switch it on from the dashboard)
+      - {category: press_release, url: "https://www.rbi.org.in/pressreleases_rss.xml"}
+      - {category: notification,  url: "https://www.rbi.org.in/notifications_rss.xml"}
+    urls:
+      - {category: press_release, url: "https://www.rbi.org.in/pressreleases_rss.xml"}
+      - {category: notification,  url: "https://www.rbi.org.in/notifications_rss.xml"}
+      - {category: speech,        url: "https://www.rbi.org.in/speeches_rss.xml"}
+      - {category: tender,        url: "https://www.rbi.org.in/tenders_rss.xml"}
+      - {category: publication,   url: "https://www.rbi.org.in/Publication_rss.xml"}
+
+  sebi_rss:
+    # Declares a 60-minute TTL and is often empty. Kept for completeness.
+    type: rss
+    tier: regulator
+    cadence: {hot: 600, cool: 1800}
+    urls:
+      - https://www.sebi.gov.in/sebirss.xml
+
+  sebi:
+    # The real SEBI source: listing pages (date only, no time of day).
+    type: sebi_html
+    tier: regulator
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - {category: press_release, url: "https://www.sebi.gov.in/sebiweb/home/HomeAction.do?doListing=yes&sid=6&ssid=23&smid=0"}
+      - {category: order,         url: "https://www.sebi.gov.in/sebiweb/home/HomeAction.do?doListing=yes&sid=2&ssid=9&smid=0"}
+      - {category: circular,      url: "https://www.sebi.gov.in/sebiweb/home/HomeAction.do?doListing=yes&sid=1&ssid=7&smid=0"}
+
+  pib:
+    # English all-releases page grouped by ministry (PIB RSS is Hindi-only here, no dates).
+    type: pib_html
+    tier: regulator
+    cadence: {hot: 60, cool: 300}
+    url: "https://pib.gov.in/allRel.aspx?reg=3&lang=1"
+    detail_fetch_max: 5
+    ministries:
+      - Ministry of Finance
+      - Ministry of Commerce
+      - Ministry of Petroleum
+      - Ministry of Power
+      - Cabinet
+
+  pib_rss:
+    type: rss
+    tier: regulator
+    enabled: false   # Hindi titles, no pubDate, no ministry. Use `pib` instead.
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3"
+
+  # -------------------------------------------------------------------- media
+  business_standard:
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://www.business-standard.com/rss/markets-106.rss
+
+  # Moneycontrol: dropped. Checked 2026-11-16: marketreports, business, latestnews,
+  # buzzingstocks, results, economy all answer 200 but their newest item is ~937 days old
+  # (MCtopnews ~3,500 days). The RSS is frozen.
+
+  et_markets:
+    # Live, but the newest item trailed by 1-3.5 h at midday on a trading day.
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms
+      - https://economictimes.indiatimes.com/markets/stocks/news/rssfeeds/2146842.cms
+
+  mint:
+    # No ETag / Last-Modified: every poll is a full download.
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://www.livemint.com/rss/markets
+      - https://www.livemint.com/rss/companies
+
+  hindu_businessline:
+    # Fastest media feed in the 2026-11-16 race (site-wide feed: p50 ~2.6 min).
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://www.thehindubusinessline.com/markets/feeder/default.rss
+      - https://www.thehindubusinessline.com/feeder/default.rss
+
+  cnbctv18:
+    # Added 2026-11-16: ~4 min behind publish in the race (small sample). No ETag support.
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://www.cnbctv18.com/commonfeeds/v1/cne/rss/market.xml
+      - https://www.cnbctv18.com/commonfeeds/v1/cne/rss/latest.xml
+
+  investing_in:
+    # Added 2026-11-16: Investing.com India news, ~5 min behind publish in the race. Supports 304.
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://in.investing.com/rss/news_25.rss
+
+  ndtv_profit:
+    # Only a site-wide 'latest' feed (includes sports etc.); /feed and the feedburner
+    # markets feed are 404, ?section= is ignored. Some items carry future timestamps.
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://www.ndtvprofit.com/stories.rss
+
+  # -------------------------------------------------------------- global cues
+  fed:
+    type: rss
+    tier: regulator
+    cadence: {hot: 60, cool: 300}
+    urls:
+      - https://www.federalreserve.gov/feeds/press_all.xml
+      - https://www.federalreserve.gov/feeds/press_monetary.xml
+
+  global_data:
+    # US jobs/CPI releases (BLS) and ECB press releases: global drivers of FII flows. Index-wide,
+    # logged under "Nifty movers", never alerted on their own. Both support conditional GET.
+    type: rss
+    tier: regulator
+    cadence: {hot: 120, cool: 600}
+    naive_tz: UTC
+    urls:
+      - https://www.bls.gov/feed/bls_latest.rss
+      - https://www.ecb.europa.eu/rss/press.html
+
+  google_news:
+    type: rss
+    tier: media
+    cadence: {hot: 60, cool: 600}
+    google_news_queries:
+      - "crude oil prices"
+      - "US Treasury yields"
+      - "Federal Reserve"
+      - "FII outflows India"

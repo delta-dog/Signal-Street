@@ -1,0 +1,21 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local data: the live database and the site-icon cache are rebuilt on each machine
+marketmon.db
+marketmon.db-*
+*.db-journal
+logo_cache/
+
+# Raw captures from `check-sources --record` (tests use tests/fixtures/)
+/fixtures/
+
+# Editor / tooling
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

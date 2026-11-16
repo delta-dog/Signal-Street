@@ -1,0 +1,74 @@
+# Noise filter and priority rules. All patterns are case-insensitive regexes matched
+# against the item's title + category.
+#
+# Priority:  P0 = instant push, P1 = 5-minute digest, P2 = logged only, P3 = dropped as noise.
+
+# Routine filings: kept in the database as P3, never alerted.
+drop:
+  - trading window
+  - \besop\b|\besos\b|employee stock option|allotment.*(esop|esos|employee)
+  - newspaper (publication|advertisement)|copy of newspaper|newspaper ad
+  - analysts?.{0,20}(meet|call)|investors?.{0,20}(meet|conference)|con(ference)?\.? ?call
+  - earnings call|schedule of (analyst|investor)
+  - (loss|issue) of (duplicate )?share certificate|duplicate share certificate|letter of confirmation
+  - regulation 74\s*\(5\)|reg\.? ?74\(5\)|regulation 40\s*\(9\)|regulation 7\s*\(3\)|compliance certificate
+  - statement of investor complaints|investor grievance
+  - change in (registrar|rta)|registrar (and|&) (share )?transfer agent
+  - intimation of record date for (interest|redemption)|interest payment on ncd
+  - closure of register|book closure
+  - kyc|unclaimed (dividend|shares)|iepf
+  - voting results? of postal ballot|scrutinizer.?s report|e-?voting
+  - disclosure under regulation 31\(4\)|encumbrance
+  - certificate under|secretarial compliance
+
+# Market-moving labels. First match wins, so order matters.
+keep:
+  fraud_default: \bfraud\b|\bdefault(ed)?\b|forensic audit|delay in (payment|servicing)|non-?payment
+  auditor: (auditor|statutory auditor).{0,40}resign|resignation of (the )?(statutory )?auditor
+  regulatory: sebi order|show.?cause|penalt|adjudicat|enforcement directorate|\bed\b raid|income.?tax (search|survey|order|demand)|gst (demand|notice|order)|tax demand|nclt|insolvency|debar|suspen|\bcbi\b
+  results: financial results|(quarterly|half.?year|annual) results|(un)?audited.{0,30}results|earnings release
+  board_outcome: outcome of (the )?board meeting|board meeting outcome|board.{0,20}approv
+  mna: acquisition|acquire|amalgamation|merger|demerger|scheme of arrangement|takeover|open offer|stake (sale|purchase)|divest|joint venture
+  fundraise: fund.?rais|\bqip\b|qualified institutions? placement|preferential (issue|allotment)|rights issue|buy.?back|\bncds?\b|issue of (bonds|debentures)|\bipo\b
+  rating: credit rating|rating (upgrade|downgrade|reaffirm|action)|\bcrisil\b|\bicra\b|care ratings|india ratings|moody|fitch|s&p global
+  orders: bagging|receiving of orders|order (win|inflow|worth)|contract (win|award)|letter of (award|intent)|\bloa\b|order book
+  management: resignation of .{0,30}(md|ceo|cfo|managing director|chief executive|chairman)|appointment of .{0,30}(md|ceo|managing director|chief executive)
+
+# Labels that make an exchange filing from a Nifty 50 company P0. All other keep labels are
+# P1 for ordinary constituents and P0 for heavyweights ("stricter alerting").
+p0_labels_constituent: [results, board_outcome]
+
+# ------------------------------------------------------------------ index impact
+# Only news that can move the Nifty 50 / Sensex gets P0 or P1. Every item is tagged with an impact:
+#   heavy  - names a heavyweight constituent      stock - names another Nifty 50 / Sensex stock
+#   index  - index-wide driver (policy, macro data, flows, crude, rupee, Fed, tax, F&O rules, shocks)
+# Anything else is at most P2 (logged, never alerted).
+index_impact:
+  macro: \bnifty\b|\bsensex\b|bank nifty|repo rate|policy rate|monetary policy|\bmpc\b|\bcrr\b|\bslr\b|liquidity|inflation|\bcpi\b|\bwpi\b|\biip\b|\bgdp\b|fiscal deficit|current account|forex reserves?|\brupee\b|\bfii|\bfpi|foreign (portfolio|institutional)|crude|brent|opec|oil prices?|us yields?|treasury yields?|federal reserve|\bfomc\b|\bfed\b|rate (cut|hike)|tariffs?|gst (council|rate)|union budget|\bbudget\b|tax (cut|hike|rate)|\bstt\b|\bltcg\b|capital gains tax|disinvestment|f&o|derivatives|margin rules|market-wide|index rebalanc|\bmsci\b|\bftse\b|geopolitic|\bwar\b|ceasefire|sanctions on|recession|sovereign rating|consumer price index|employment situation|nonfarm|payrolls|interest rates?|key ecb|ecb (rate|policy|monetary)
+  # Coverage of moves (live blogs, lists) describes the market; it doesn't move it.
+  exclude: \blive\b|live updates|stock market today|stocks to watch|share price (live|today)|price today|buy or sell|stocks to buy|top gainers|top losers|\bgmp\b|market outlook|closing bell|opening bell|is the (stock )?market open|market holiday|stock market highlights|(sensex|nifty) today|market wrap|at close of trade|(sensex|nifty|markets?|shares|indices) (ends?|closes?|settles?|finish(es)?) (higher|lower|flat|up|down)|rises? \d+ paise to close|falls? \d+ paise to close
+
+# Regulator / government rules (all also require index impact for P0/P1).
+rbi:
+  # Policy and prudential actions that hit bank stocks (a third of the Nifty) or rates: P0.
+  p0: monetary policy|policy repo|repo rate|\bmpc\b|\bcrr\b|\bslr\b|cash reserve ratio|statutory liquidity|standing deposit facility|policy rate|liquidity adjustment|capital adequacy|risk weights?|provisioning|liquidity coverage|\blcr\b|expected credit loss|priority sector|large exposures?
+  p0_exclude: UAPA|sanctions list|lead bank responsibility|re-?organisation of districts|edited transcript
+  # Notifications for banks/NBFCs, forex reserves, governor's remarks: P1. Everything else: P2.
+  p1: (commercial banks|scheduled banks|\bnbfcs?\b|housing finance).{0,60}(norms|directions|framework|capital|lending|provision|exposure|liquidity)|(norms|directions|framework|capital|lending|provision|exposure|liquidity).{0,60}(commercial banks|scheduled banks|\bnbfcs?\b|housing finance)|forex reserves|governor|financial stability|external commercial borrowing|\becb\b
+  # Licensing housekeeping (registrations cancelled/surrendered) never moves the index.
+  not_index: certificates? of registration|surrender|cancels? (the )?licen[cs]e|co-?operative bank
+sebi:
+  # Index-wide market rules (F&O, FPI, margins, index, listing) and anything naming a constituent: P1.
+  # Naming a heavyweight: P0. Everything else (most orders, procedural circulars): P2.
+  p1: derivatives|f&o|futures|options|\bfpis?\b|foreign portfolio|margin|index|position limits|short selling|circuit|listing obligations|block deal|insider trading norms|mutual funds? (investment|limits)
+pib:
+  p0_ministries: [Cabinet]
+  p0: petroleum|crude|oil|gas|fuel|energy|power|electricity|coal|renewable|tax|gst|duty|cess|finance|fiscal|borrowing|disinvestment|bank|tariff|export|import|subsidy
+  # Outside the Cabinet: only index-wide items (data releases, tax, tariffs...) are P1.
+fed:
+  p1: fomc|federal open market committee|monetary policy|federal funds|discount rate|policy statement
+media:
+  # P1 only when a Nifty 50 name is in the headline AND it carries a market-moving label. Index-wide
+  # media stories are tagged impact=index (shown under "Nifty movers") but stay P2: alerts come from
+  # primary sources. A media story about a filing we already have is a follow-up, never alerted.
+  p1_needs_constituent: true

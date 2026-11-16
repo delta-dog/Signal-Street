@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 96" role="img" aria-label="Signal Street">
+  <!-- Icon + wordmark. Wordmark: Google Sans / Roboto (Material 3 brand and plain typefaces), weight 500. -->
+  <style>
+    .bg { fill: #005AC1 } .ln { stroke: #FFFFFF } .live { fill: #6DD58C }
+    .wm { fill: #1A1B1F; font: 500 44px "Google Sans", Roboto, "Segoe UI", Arial, sans-serif; letter-spacing: -0.5px }
+    .wm tspan { fill: #005AC1 }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #004494 } .ln { stroke: #D8E2FF } .wm { fill: #E3E2E6 } .wm tspan { fill: #ADC6FF }
+    }
+  </style>
+  <rect class="bg" width="96" height="96" rx="28"/>
+  <circle class="live" cx="70" cy="32" r="14" opacity=".35"/>
+  <polyline class="ln" points="22,66 38,50 50,59 70,32" fill="none" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="live" cx="70" cy="32" r="8"/>
+  <text class="wm" x="116" y="63">Signal<tspan> Street</tspan></text>
+</svg>

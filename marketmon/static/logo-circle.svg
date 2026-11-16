@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Signal Street">
+  <!-- Circular app icon (A7 two-tone live line). Same colours as logo.svg; mark re-centred for the circle. -->
+  <style>
+    .bg { fill: #005AC1 } .ln { stroke: #FFFFFF } .live { fill: #6DD58C }
+    @media (prefers-color-scheme: dark) { .bg { fill: #004494 } .ln { stroke: #D8E2FF } }
+  </style>
+  <circle class="bg" cx="48" cy="48" r="48"/>
+  <circle class="live" cx="68" cy="36" r="13" opacity=".35"/>
+  <polyline class="ln" points="22,66 36,52 48,60 68,36" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="live" cx="68" cy="36" r="7.5"/>
+</svg>
